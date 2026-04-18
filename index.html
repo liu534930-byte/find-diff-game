@@ -25,6 +25,7 @@ body { background:#0d0d1a; min-height:100vh; font-family:'PingFang SC','Microsof
 
 /* ── GAME ── */
 #screenGame { display:none; flex-direction:column; align-items:center; padding:10px 8px 20px; }
+#gameTop { width:100%; }
 .gHeader { display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; justify-content:center; }
 #gameTitle { font-size:1.25rem; color:#ffd700; letter-spacing:2px; }
 #btnBack { padding:4px 12px; background:transparent; border:1px solid #444; border-radius:16px; color:#888; font-size:.78rem; cursor:pointer; }
@@ -44,21 +45,31 @@ canvas { border:2px solid #2e2e4e; border-radius:8px; cursor:crosshair; display:
 .dot { width:18px; height:18px; border-radius:50%; background:#1a1a2e; border:2px solid #333; transition:all .35s; }
 .dot.ok { background:#4ecca3; border-color:#4ecca3; box-shadow:0 0 8px rgba(78,204,163,.55); }
 #tip { color:#666; font-size:.83rem; margin-top:6px; min-height:19px; text-align:center; }
-/* ── MOBILE ── */
+/* ── MOBILE: 全宽画布 + 顶部悬浮 HUD + 自然滚动 ── */
 @media(max-width:600px){
-  #screenGame { padding:6px 5px 8px; }
-  .gHeader { margin-bottom:3px; gap:7px; }
+  #screenGame { padding:0 0 env(safe-area-inset-bottom,16px); align-items:stretch; }
+  #gameTop {
+    position:sticky; top:0; z-index:50;
+    background:#0d0d1a;
+    border-bottom:1px solid #1e1e3e;
+    padding:8px 10px 6px;
+  }
+  .gHeader { margin-bottom:4px; gap:8px; justify-content:flex-start; }
   #gameTitle { font-size:1rem; letter-spacing:1px; }
-  #btnBack { font-size:.7rem; padding:3px 10px; }
-  #hud { gap:10px; margin-bottom:5px; }
-  .hl { font-size:.6rem; }
-  .hv { font-size:1rem; }
-  #btnHint { font-size:.72rem; padding:4px 10px; }
-  #boards { flex-direction:column; gap:5px; }
-  .col span { font-size:.68rem; }
-  #dots { margin-top:5px; gap:5px; }
-  .dot { width:14px; height:14px; }
-  #tip { font-size:.75rem; margin-top:3px; min-height:16px; }
+  #btnBack { font-size:.72rem; padding:3px 10px; }
+  #hud { gap:0; margin-bottom:0; justify-content:space-between; width:100%; }
+  .hb { min-width:0; flex:1; }
+  .hl { font-size:.58rem; }
+  .hv { font-size:.95rem; }
+  #btnHint { font-size:.7rem; padding:4px 10px; flex-shrink:0; }
+  /* 画布全宽，边到边 */
+  #boards { flex-direction:column; gap:0; width:100%; }
+  .col { width:100%; gap:0; }
+  .col span { font-size:.72rem; padding:6px 0 3px; background:#0d0d1a; display:block; text-align:center; }
+  canvas { border-radius:0; border-left:none; border-right:none; width:100% !important; }
+  #dots { margin-top:10px; gap:8px; padding:0 12px; }
+  .dot { width:16px; height:16px; }
+  #tip { font-size:.8rem; margin-top:5px; padding:0 12px 12px; }
 }
 
 /* ── OVERLAY ── */
@@ -84,16 +95,18 @@ canvas { border:2px solid #2e2e4e; border-radius:8px; cursor:crosshair; display:
 </div>
 
 <div id="screenGame">
-  <div class="gHeader">
-    <button id="btnBack" onclick="backToSelect()">← 选关</button>
-    <div id="gameTitle"></div>
-  </div>
-  <div id="hud">
-    <div class="hb"><div class="hl">关卡</div><div class="hv" id="hudLvl">1/8</div></div>
-    <div class="hb"><div class="hl">已找到</div><div class="hv"><span id="fc">0</span>/<span id="ft">5</span></div></div>
-    <div class="hb"><div class="hl">剩余时间</div><div class="hv" id="tm">120</div></div>
-    <div class="hb"><div class="hl">得分</div><div class="hv" id="sc">0</div></div>
-    <button id="btnHint" onclick="useHint()">💡 提示 (<span id="hintLeft">3</span>)</button>
+  <div id="gameTop">
+    <div class="gHeader">
+      <button id="btnBack" onclick="backToSelect()">← 选关</button>
+      <div id="gameTitle"></div>
+    </div>
+    <div id="hud">
+      <div class="hb"><div class="hl">关卡</div><div class="hv" id="hudLvl">1/8</div></div>
+      <div class="hb"><div class="hl">已找到</div><div class="hv"><span id="fc">0</span>/<span id="ft">5</span></div></div>
+      <div class="hb"><div class="hl">剩余时间</div><div class="hv" id="tm">120</div></div>
+      <div class="hb"><div class="hl">得分</div><div class="hv" id="sc">0</div></div>
+      <button id="btnHint" onclick="useHint()">💡 提示 (<span id="hintLeft">3</span>)</button>
+    </div>
   </div>
   <div id="boards">
     <div class="col"><span>原图</span><canvas id="cL" width="460" height="320"></canvas></div>
@@ -1160,30 +1173,20 @@ function goNext(){
 ═══════════════════════════════════════════ */
 function resizeCanvases(){
   const vw=window.innerWidth;
-  // visualViewport.height 排除浏览器工具栏遮挡区域，比 innerHeight 更准确
-  const vh=window.visualViewport ? window.visualViewport.height : window.innerHeight;
   if(vw>600){
-    const maxW=Math.min(460, vw/2-20);
-    const cw=maxW, ch=Math.round(maxW*320/460);
-    [CL,CR].forEach(c=>{ c.style.width=cw+'px'; c.style.height=ch+'px'; });
-    document.getElementById('boards').style.flexDirection='row';
-    return;
+    // 桌面端：左右并排
+    const maxW=Math.min(460,Math.floor(vw/2)-20);
+    const ch=Math.round(maxW*320/460);
+    [CL,CR].forEach(c=>{ c.style.width=maxW+'px'; c.style.height=ch+'px'; });
+  } else {
+    // 移动端：全宽，高度按比例自动跟随 CSS width:100%
+    // 只需设置 height，width 由 CSS 100% 控制
+    const cw=vw;
+    const ch=Math.round(cw*320/460);
+    [CL,CR].forEach(c=>{ c.style.height=ch+'px'; });
   }
-  // 移动端竖排：header≈32 + hud≈44 + labels≈36 + gap≈5 + dots≈22 + tip≈18 + padding≈28 = ~185
-  // 再加 env(safe-area) 底部预留 30px
-  const uiH=215, gap=5;
-  const availH=vh-uiH;
-  const maxH=Math.max(110, Math.floor((availH-gap)/2));
-  const maxW=Math.floor(vw*0.96);
-  const ratio=460/320;
-  let cw,ch;
-  if(maxW/ratio<=maxH){ cw=maxW; ch=Math.round(maxW/ratio); }
-  else { ch=maxH; cw=Math.round(maxH*ratio); }
-  [CL,CR].forEach(c=>{ c.style.width=cw+'px'; c.style.height=ch+'px'; });
-  document.getElementById('boards').style.flexDirection='column';
 }
 window.addEventListener('resize',resizeCanvases);
-if(window.visualViewport) window.visualViewport.addEventListener('resize',resizeCanvases);
 
 /* ═══════════════════════════════════════════
    INIT
