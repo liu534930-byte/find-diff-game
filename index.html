@@ -6,7 +6,7 @@
 <title>🔍 找不同</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0d0d1a; min-height:100vh; font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif; color:#eee; overflow-x:hidden; }
+body { background:#0d0d1a; min-height:100vh; font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif; color:#eee; overflow-x:hidden; padding-bottom:env(safe-area-inset-bottom,0px); }
 
 /* ── SELECT ── */
 #screenSelect { display:flex; flex-direction:column; align-items:center; padding:28px 16px 50px; }
@@ -1159,21 +1159,22 @@ function goNext(){
    RESPONSIVE CANVAS SIZING
 ═══════════════════════════════════════════ */
 function resizeCanvases(){
-  const vw=window.innerWidth, vh=window.innerHeight;
+  const vw=window.innerWidth;
+  // visualViewport.height 排除浏览器工具栏遮挡区域，比 innerHeight 更准确
+  const vh=window.visualViewport ? window.visualViewport.height : window.innerHeight;
   if(vw>600){
-    // desktop: side by side, each up to (vw/2 - 20px), natural height
     const maxW=Math.min(460, vw/2-20);
     const cw=maxW, ch=Math.round(maxW*320/460);
     [CL,CR].forEach(c=>{ c.style.width=cw+'px'; c.style.height=ch+'px'; });
     document.getElementById('boards').style.flexDirection='row';
     return;
   }
-  // mobile: stacked — fit BOTH canvases + UI into viewport without scroll
-  // UI height: header~30 + hud~46 + labels~19*2 + gap~5 + dots~24 + tip~19 + padding~20 ≈ 182px
-  const uiH=182, gap=5;
+  // 移动端竖排：header≈32 + hud≈44 + labels≈36 + gap≈5 + dots≈22 + tip≈18 + padding≈28 = ~185
+  // 再加 env(safe-area) 底部预留 30px
+  const uiH=215, gap=5;
   const availH=vh-uiH;
-  const maxH=Math.max(120, Math.floor((availH-gap)/2));
-  const maxW=Math.floor(vw*0.97);
+  const maxH=Math.max(110, Math.floor((availH-gap)/2));
+  const maxW=Math.floor(vw*0.96);
   const ratio=460/320;
   let cw,ch;
   if(maxW/ratio<=maxH){ cw=maxW; ch=Math.round(maxW/ratio); }
@@ -1182,6 +1183,7 @@ function resizeCanvases(){
   document.getElementById('boards').style.flexDirection='column';
 }
 window.addEventListener('resize',resizeCanvases);
+if(window.visualViewport) window.visualViewport.addEventListener('resize',resizeCanvases);
 
 /* ═══════════════════════════════════════════
    INIT
