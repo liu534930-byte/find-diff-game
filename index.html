@@ -40,11 +40,26 @@ body { background:#0d0d1a; min-height:100vh; font-family:'PingFang SC','Microsof
 .col { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .col span { color:#777; font-size:.75rem; }
 canvas { border:2px solid #2e2e4e; border-radius:8px; cursor:crosshair; display:block; width:460px; height:320px; max-width:calc(50vw - 12px); }
-@media(max-width:480px){ #boards{ flex-direction:column; } canvas{ max-width:96vw; width:auto; } }
 #dots { display:flex; gap:7px; margin-top:8px; flex-wrap:wrap; justify-content:center; }
 .dot { width:18px; height:18px; border-radius:50%; background:#1a1a2e; border:2px solid #333; transition:all .35s; }
 .dot.ok { background:#4ecca3; border-color:#4ecca3; box-shadow:0 0 8px rgba(78,204,163,.55); }
 #tip { color:#666; font-size:.83rem; margin-top:6px; min-height:19px; text-align:center; }
+/* ── MOBILE ── */
+@media(max-width:600px){
+  #screenGame { padding:6px 5px 8px; }
+  .gHeader { margin-bottom:3px; gap:7px; }
+  #gameTitle { font-size:1rem; letter-spacing:1px; }
+  #btnBack { font-size:.7rem; padding:3px 10px; }
+  #hud { gap:10px; margin-bottom:5px; }
+  .hl { font-size:.6rem; }
+  .hv { font-size:1rem; }
+  #btnHint { font-size:.72rem; padding:4px 10px; }
+  #boards { flex-direction:column; gap:5px; }
+  .col span { font-size:.68rem; }
+  #dots { margin-top:5px; gap:5px; }
+  .dot { width:14px; height:14px; }
+  #tip { font-size:.75rem; margin-top:3px; min-height:16px; }
+}
 
 /* ── OVERLAY ── */
 #overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.82); align-items:center; justify-content:center; z-index:200; }
@@ -1141,8 +1156,37 @@ function goNext(){
 }
 
 /* ═══════════════════════════════════════════
+   RESPONSIVE CANVAS SIZING
+═══════════════════════════════════════════ */
+function resizeCanvases(){
+  const vw=window.innerWidth, vh=window.innerHeight;
+  if(vw>600){
+    // desktop: side by side, each up to (vw/2 - 20px), natural height
+    const maxW=Math.min(460, vw/2-20);
+    const cw=maxW, ch=Math.round(maxW*320/460);
+    [CL,CR].forEach(c=>{ c.style.width=cw+'px'; c.style.height=ch+'px'; });
+    document.getElementById('boards').style.flexDirection='row';
+    return;
+  }
+  // mobile: stacked — fit BOTH canvases + UI into viewport without scroll
+  // UI height: header~30 + hud~46 + labels~19*2 + gap~5 + dots~24 + tip~19 + padding~20 ≈ 182px
+  const uiH=182, gap=5;
+  const availH=vh-uiH;
+  const maxH=Math.max(120, Math.floor((availH-gap)/2));
+  const maxW=Math.floor(vw*0.97);
+  const ratio=460/320;
+  let cw,ch;
+  if(maxW/ratio<=maxH){ cw=maxW; ch=Math.round(maxW/ratio); }
+  else { ch=maxH; cw=Math.round(maxH*ratio); }
+  [CL,CR].forEach(c=>{ c.style.width=cw+'px'; c.style.height=ch+'px'; });
+  document.getElementById('boards').style.flexDirection='column';
+}
+window.addEventListener('resize',resizeCanvases);
+
+/* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
+resizeCanvases();
 buildLevelSelect();
 </script>
 </body>
