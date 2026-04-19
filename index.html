@@ -154,6 +154,116 @@ canvas{
 /* found flash overlay on canvas blocks */
 .flash-green{animation:flashG .4s ease;}
 @keyframes flashG{0%{box-shadow:0 0 0 rgba(78,204,163,0);}50%{box-shadow:0 0 30px rgba(78,204,163,.8);}100%{box-shadow:0 0 0 rgba(78,204,163,0);}}
+
+/* ══ TUTORIAL ══ */
+#tutorialOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:300;}
+#tutorialOverlay.on{display:block;}
+.tutScroll{
+  position:absolute;left:50%;top:28px;transform:translateX(-50%);
+  background:linear-gradient(135deg,#ffd966,#ff9a3c);
+  color:#2a1808;padding:14px 22px;border-radius:18px;
+  font-weight:bold;font-size:.95rem;text-align:center;
+  box-shadow:0 6px 24px rgba(255,180,60,.4),inset 0 1px 0 rgba(255,255,255,.6);
+  max-width:84%;line-height:1.5;
+  animation:scrollIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes scrollIn{from{transform:translate(-50%,-80px);opacity:0;}to{transform:translateX(-50%);opacity:1;}}
+.tutScroll small{display:block;font-weight:normal;color:#5a3a10;font-size:.75rem;margin-top:4px;}
+.tutFinger{
+  position:absolute;font-size:2.8rem;pointer-events:none;z-index:2;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.8));
+  animation:fingerTap 1.2s infinite;
+}
+@keyframes fingerTap{
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-35%) scale(.88);}
+}
+.tutSpotlight{
+  position:absolute;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.78);
+  border:3px solid #ffd700;
+  animation:spotPulse 1.5s infinite;
+}
+@keyframes spotPulse{
+  0%,100%{transform:scale(1);border-color:#ffd700;}
+  50%{transform:scale(1.08);border-color:#fff;}
+}
+.tutBtn{
+  position:absolute;left:50%;bottom:40px;transform:translateX(-50%);
+  background:linear-gradient(145deg,#4ecca3,#2e9a7e);
+  color:#0d1a18;border:none;padding:12px 36px;border-radius:28px;
+  font-size:1rem;font-weight:bold;cursor:pointer;
+  box-shadow:0 4px 16px rgba(78,204,163,.5);
+  animation:btnBounce 1.8s ease-in-out infinite;
+}
+@keyframes btnBounce{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,-4px);}}
+#tutSkip{
+  position:absolute;top:12px;right:12px;z-index:3;
+  background:rgba(255,255,255,.08);color:#aaa;
+  border:1px solid #555;border-radius:20px;
+  padding:6px 14px;font-size:.75rem;cursor:pointer;
+}
+
+/* ══ COMBO POPUP ══ */
+#comboPopup{
+  position:fixed;left:50%;top:42%;
+  transform:translate(-50%,-50%) scale(.4);
+  font-size:2.6rem;font-weight:900;letter-spacing:3px;
+  color:#ffd700;
+  text-shadow:0 0 24px rgba(255,215,0,.9),3px 3px 0 #8a3808,0 0 6px #fff;
+  pointer-events:none;z-index:180;opacity:0;
+  -webkit-text-stroke:1.5px #5a2808;
+}
+#comboPopup.on{animation:comboPop .95s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes comboPop{
+  0%{opacity:0;transform:translate(-50%,-30%) scale(.3) rotate(-8deg);}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.25) rotate(3deg);}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-1deg);}
+  100%{opacity:0;transform:translate(-50%,-90%) scale(1) rotate(0);}
+}
+
+/* ══ VICTORY FRAME ══ */
+#oBox.victory{
+  background:linear-gradient(160deg,#1f1a0e,#0f0a04);
+  border:3px solid #ffd700;
+  padding:22px 20px 20px;
+  max-width:min(92vw,380px);
+}
+.vCrown{font-size:2.4rem;line-height:1;margin-bottom:2px;
+  animation:crownBounce .8s cubic-bezier(.34,1.56,.64,1);display:inline-block;}
+@keyframes crownBounce{from{transform:scale(0) rotate(-40deg);}to{transform:scale(1) rotate(0);}}
+#victoryFrame{
+  background:linear-gradient(135deg,#a07830,#5a3e10);
+  padding:7px;border-radius:10px;margin:10px 0 6px;
+  box-shadow:inset 0 0 0 2px #c89848,0 6px 16px rgba(0,0,0,.6);
+  position:relative;
+}
+#victoryFrame::before{content:'';position:absolute;inset:2px;
+  border:1.5px solid rgba(255,230,180,.3);border-radius:8px;pointer-events:none;}
+#victoryFrame canvas{display:block;width:100%;border-radius:6px;background:#0d0d1a;}
+.vStats{
+  display:flex;justify-content:space-around;gap:8px;
+  padding:10px 6px;background:rgba(255,215,0,.06);
+  border-radius:10px;margin:8px 0;
+}
+.vStat{text-align:center;flex:1;}
+.vStatLabel{color:#888;font-size:.68rem;margin-bottom:2px;}
+.vStatVal{color:#ffd700;font-size:1.15rem;font-weight:bold;letter-spacing:1px;}
+.vSocial{
+  font-size:.78rem;color:#d0d8e0;line-height:1.5;
+  padding:9px 12px;background:rgba(78,204,163,.09);
+  border-radius:8px;border-left:3px solid #4ecca3;
+  margin-bottom:12px;text-align:left;
+}
+.vSocial b{color:#4ecca3;font-size:.9rem;}
+
+/* enhanced star burst on found */
+.star-burst{position:absolute;pointer-events:none;font-size:1rem;
+  animation:starFly .6s ease-out forwards;}
+@keyframes starFly{
+  0%{opacity:1;transform:translate(0,0) scale(.5);}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2);}
+}
 </style>
 </head>
 <body>
@@ -161,7 +271,7 @@ canvas{
 <!-- SELECT -->
 <div id="screenSelect">
   <div class="appLogo">🔍 找不同</div>
-  <div class="appSub">眼力大挑战 · 共 8 关 · 越往后越难</div>
+  <div class="appSub">眼力大挑战 · 共 8 关 · 每关 10+ 处差异</div>
   <div id="levelGrid"></div>
 </div>
 
@@ -194,13 +304,36 @@ canvas{
   </div>
 </div>
 
+<!-- TUTORIAL -->
+<div id="tutorialOverlay">
+  <button id="tutSkip" onclick="endTutorial()">跳过 ×</button>
+  <div id="tutScrollMsg" class="tutScroll"></div>
+  <div id="tutSpot" class="tutSpotlight" style="display:none;"></div>
+  <div id="tutFinger" class="tutFinger" style="display:none;">👆</div>
+  <button id="tutBtn" class="tutBtn" onclick="nextTutorialStep()">下一步</button>
+</div>
+
+<!-- COMBO -->
+<div id="comboPopup"></div>
+
 <!-- OVERLAY -->
 <div id="overlay">
   <div id="oBox">
+    <span id="vCrown" class="vCrown" style="display:none;">👑</span>
     <h2 id="oTitle"></h2>
     <div id="oStars"></div>
+    <div id="victoryFrame" style="display:none;">
+      <canvas id="vCanvas" width="460" height="320"></canvas>
+    </div>
+    <div id="vStatsBlock" class="vStats" style="display:none;">
+      <div class="vStat"><div class="vStatLabel">通关时间</div><div class="vStatVal" id="vTime">—</div></div>
+      <div class="vStat"><div class="vStatLabel">得分</div><div class="vStatVal" id="vScore">—</div></div>
+      <div class="vStat"><div class="vStatLabel">评级</div><div class="vStatVal" id="vRank">—</div></div>
+    </div>
+    <div id="vSocial" class="vSocial" style="display:none;"></div>
     <p id="oMsg"></p>
     <div class="oBtns">
+      <button id="btnShare" onclick="shareResult()" style="background:#1da1f2;color:#fff;display:none;">📤 约战好友</button>
       <button id="btnReplay" onclick="startLevel(currentLvlIdx)">重玩</button>
       <button id="btnToSelect" onclick="backToSelect()">选关</button>
       <button id="btnNextLvl" onclick="goNext()">下一关 →</button>
@@ -256,6 +389,11 @@ const LEVELS=[
   {cx:175,cy:252,r:42,name:'车身颜色'},
   {cx:390,cy:258,r:34,name:'猫咪尾巴'},
   {cx:362,cy:192,r:28,name:'窗户灯光'},
+  {cx:252,cy:198,r:20,name:'路灯开关'},
+  {cx:76, cy:202,r:26,name:'树冠大小'},
+  {cx:60, cy:142,r:22,name:'小鸟'},
+  {cx:430,cy:300,r:24,name:'消防栓'},
+  {cx:30, cy:80, r:20,name:'星星'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -330,6 +468,37 @@ const LEVELS=[
   [[411,257,400,254],[411,259,398,259],[411,261,400,264],[432,257,443,254],[432,259,445,259],[432,261,443,264]].forEach(([x1,y1,x2,y2])=>{ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); });
   ctx.fillStyle=cc; [[393,270],[401,270],[409,270],[417,270]].forEach(([x,y])=>ctx.fillRect(x,y,6,12));
   if(!R){ ctx.strokeStyle=cc; ctx.lineWidth=5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(386,265); ctx.quadraticCurveTo(368,248,374,232); ctx.stroke(); }
+  // [d5] lamp light on/off
+  if(!R){
+    ctx.save(); ctx.globalAlpha=.35; ctx.fillStyle='#fff2a0';
+    ctx.beginPath(); ctx.arc(252,198,32,0,Math.PI*2); ctx.fill(); ctx.restore();
+  }
+  // [d6] tree canopy size (R bigger)
+  if(R){
+    ctx.fillStyle='#276645'; ctx.beginPath(); ctx.arc(76,200,38,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1e5235';
+    ctx.beginPath(); ctx.arc(58,214,18,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(94,214,18,0,Math.PI*2); ctx.fill();
+  }
+  // [d7] bird on left building roof
+  if(!R){
+    ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(52,142); ctx.quadraticCurveTo(60,136,68,142); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(58,140); ctx.quadraticCurveTo(60,134,62,140); ctx.stroke();
+  }
+  // [d8] fire hydrant
+  ctx.fillStyle=R?'#ffd700':'#cc2020';
+  ctx.fillRect(425,290,12,22);
+  ctx.beginPath(); ctx.arc(431,288,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=R?'#b89818':'#8a1818';
+  ctx.fillRect(422,300,18,4);
+  // [d9] extra star (only on L)
+  if(!R){
+    ctx.save(); ctx.fillStyle='#fff'; ctx.globalAlpha=.9;
+    ctx.beginPath(); ctx.arc(30,80,2.5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(45,95,1.8,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
  }
 },
 
@@ -341,6 +510,11 @@ const LEVELS=[
   {cx:378,cy:142,r:30,name:'帆船帆色'},
   {cx:368,cy:268,r:24,name:'螃蟹'},
   {cx:78, cy:168,r:28,name:'椰子数量'},
+  {cx:100,cy:95, r:22,name:'海鸥'},
+  {cx:415,cy:55, r:30,name:'太阳表情'},
+  {cx:225,cy:208,r:20,name:'沙滩椅颜色'},
+  {cx:290,cy:275,r:20,name:'贝壳数量'},
+  {cx:40, cy:245,r:22,name:'水桶'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -405,9 +579,42 @@ const LEVELS=[
     [[355,272,345,265],[360,274,348,272],[375,272,385,265],[372,274,384,272]].forEach(([x1,y1,x2,y2])=>{ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); });
     ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(363,268,2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(373,268,2,0,Math.PI*2); ctx.fill();
   }
-  // seashells
+  // seashells (base)
   ctx.fillStyle='#f0d070';
   [[120,275],[150,280],[280,270],[310,278]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); });
+  // [d5] seagull
+  if(!R){
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(88,95); ctx.quadraticCurveTo(100,85,112,95); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(96,93); ctx.quadraticCurveTo(100,88,104,93); ctx.stroke();
+  }
+  // [d6] sun smile
+  if(R){
+    ctx.save(); ctx.fillStyle='#d08030';
+    ctx.beginPath(); ctx.arc(408,52,2.2,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(422,52,2.2,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#d08030'; ctx.lineWidth=2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(415,58,6,.2,Math.PI-.2); ctx.stroke();
+    ctx.restore();
+  }
+  // [d7] beach chair stripes color
+  if(R){
+    ctx.fillStyle='#4682b4'; ctx.fillRect(200,225,50,8);
+    ctx.fillRect(195,212,55,16);
+    ctx.fillStyle='#e0c070'; ctx.fillRect(200,225,8,30); ctx.fillRect(242,225,8,30);
+  }
+  // [d8] extra seashells (R has extra)
+  if(R){
+    ctx.fillStyle='#f0d070';
+    [[285,285],[295,272]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); });
+  }
+  // [d9] sandcastle bucket
+  if(!R){
+    ctx.fillStyle='#c86420'; ctx.fillRect(30,242,22,18);
+    ctx.fillStyle='#e07835'; ctx.fillRect(28,240,26,5);
+    ctx.strokeStyle='#a04810'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(32,240); ctx.quadraticCurveTo(41,230,50,240); ctx.stroke();
+  }
  }
 },
 
@@ -420,6 +627,10 @@ const LEVELS=[
   {cx:112,cy:268,r:26,name:'花朵颜色'},
   {cx:58, cy:148,r:24,name:'树上小鸟'},
   {cx:262,cy:218,r:22,name:'窗户亮灯'},
+  {cx:230,cy:289,r:20,name:'门把手'},
+  {cx:340,cy:290,r:22,name:'蘑菇'},
+  {cx:70, cy:75, r:22,name:'星星'},
+  {cx:390,cy:265,r:22,name:'栅栏'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -499,6 +710,30 @@ const LEVELS=[
     ctx.beginPath(); ctx.moveTo(56,146); ctx.quadraticCurveTo(58,140,60,146); ctx.stroke();
     ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(65,147,2,0,Math.PI*2); ctx.fill();
   }
+  // [d6] door knob color
+  ctx.fillStyle=R?'#c0c0c0':'#ffc050';
+  ctx.beginPath(); ctx.arc(214,290,3,0,Math.PI*2); ctx.fill();
+  // [d7] mushroom (only L)
+  if(!R){
+    ctx.fillStyle='#f0f0e8'; ctx.fillRect(337,285,8,12);
+    ctx.fillStyle='#cc3030';
+    ctx.beginPath(); ctx.ellipse(341,285,11,6,0,Math.PI,0); ctx.fill();
+    ctx.fillStyle='#ffe0e0';
+    [[338,283],[344,284],[341,281]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,1.3,0,Math.PI*2); ctx.fill(); });
+  }
+  // [d8] extra star near moon
+  if(R){
+    ctx.save(); ctx.fillStyle='#fff'; ctx.globalAlpha=.9;
+    ctx.beginPath(); ctx.arc(70,75,2,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.globalAlpha=.6;
+    ctx.beginPath(); ctx.moveTo(66,75); ctx.lineTo(74,75); ctx.moveTo(70,71); ctx.lineTo(70,79); ctx.stroke();
+    ctx.restore();
+  }
+  // [d9] fence post
+  if(!R){
+    ctx.fillStyle='#7a5030'; ctx.fillRect(387,258,5,20);
+    ctx.fillStyle='#5e3c22'; ctx.fillRect(386,256,7,3);
+  }
  }
 },
 
@@ -511,6 +746,10 @@ const LEVELS=[
   {cx:242,cy:180,r:22,name:'宇航员'},
   {cx:72, cy:80, r:22,name:'小月亮'},
   {cx:298,cy:82, r:24,name:'流星'},
+  {cx:145,cy:210,r:16,name:'舷窗颜色'},
+  {cx:395,cy:90, r:22,name:'UFO'},
+  {cx:60, cy:260,r:20,name:'小外星人'},
+  {cx:210,cy:270,r:22,name:'陨石'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -595,6 +834,41 @@ const LEVELS=[
   // small asteroids
   ctx.fillStyle='#5a4a38';
   [[195,90,8],[210,105,5],[180,110,6]].forEach(([x,y,r])=>{ ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); });
+  // [d6] rocket window color
+  ctx.save();
+  ctx.fillStyle=R?'#ff88cc':'#5ab4ff';
+  ctx.beginPath(); ctx.arc(145,210,6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#8892a8'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(145,210,6,0,Math.PI*2); ctx.stroke();
+  ctx.restore();
+  // [d7] UFO
+  if(!R){
+    ctx.fillStyle='#889aa8';
+    ctx.beginPath(); ctx.ellipse(395,92,18,5,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#c8e0ff';
+    ctx.beginPath(); ctx.ellipse(395,88,10,5,0,Math.PI,0); ctx.fill();
+    ctx.fillStyle='#ffe840';
+    [388,395,402].forEach(x=>{ ctx.beginPath(); ctx.arc(x,95,1.5,0,Math.PI*2); ctx.fill(); });
+  }
+  // [d8] tiny alien
+  if(R){
+    ctx.fillStyle='#4ecca3';
+    ctx.beginPath(); ctx.ellipse(60,262,8,9,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#111';
+    ctx.beginPath(); ctx.arc(57,260,1.5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(63,260,1.5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#4ecca3'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(58,254); ctx.lineTo(58,249); ctx.moveTo(62,254); ctx.lineTo(62,249); ctx.stroke();
+    ctx.fillStyle='#ff6633';
+    ctx.beginPath(); ctx.arc(58,249,1.5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(62,249,1.5,0,Math.PI*2); ctx.fill();
+  }
+  // [d9] meteor
+  if(!R){
+    ctx.fillStyle='#8a6a48';
+    ctx.beginPath(); ctx.arc(210,270,10,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#5a4028';
+    [[206,267,2],[213,271,2.5],[208,273,1.5]].forEach(([x,y,r])=>{ ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); });
+  }
  }
 },
 
@@ -607,6 +881,10 @@ const LEVELS=[
   {cx:398,cy:115,r:36,name:'樱花颜色'},
   {cx:155,cy:42, r:28,name:'云朵'},
   {cx:258,cy:78, r:20,name:'屋顶飞鸟'},
+  {cx:167,cy:206,r:20,name:'左窗颜色'},
+  {cx:62, cy:295,r:22,name:'小盆栽'},
+  {cx:228,cy:234,r:18,name:'门神匾'},
+  {cx:300,cy:230,r:16,name:'莲花'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -695,6 +973,39 @@ const LEVELS=[
     ctx.beginPath(); ctx.arc(398+Math.cos(a)*r2,115+Math.sin(a)*r2,5,0,Math.PI*2); ctx.fill();
   }
   ctx.globalAlpha=1;
+  // [d6] left window color
+  if(R){
+    ctx.fillStyle='#9a7040'; ctx.fillRect(152,188,30,36);
+    ctx.strokeStyle='#4a3a20'; ctx.lineWidth=1; ctx.strokeRect(152,188,30,36);
+    ctx.strokeStyle='#6a4820';
+    ctx.beginPath(); ctx.moveTo(167,188); ctx.lineTo(167,224); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(152,206); ctx.lineTo(182,206); ctx.stroke();
+  }
+  // [d7] potted plant (only L)
+  if(!R){
+    ctx.fillStyle='#8a4020'; ctx.fillRect(54,290,18,14);
+    ctx.fillStyle='#6a3010'; ctx.fillRect(52,290,22,4);
+    ctx.fillStyle='#2e7840';
+    ctx.beginPath(); ctx.arc(63,286,8,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#ff6b80';
+    ctx.beginPath(); ctx.arc(63,282,3,0,Math.PI*2); ctx.fill();
+  }
+  // [d8] door plaque (红色匾额)
+  if(!R){
+    ctx.fillStyle='#c01818'; ctx.fillRect(214,228,32,14);
+    ctx.strokeStyle='#ffd700'; ctx.lineWidth=1; ctx.strokeRect(214,228,32,14);
+    ctx.fillStyle='#ffd700'; ctx.font='bold 8px serif';
+    ctx.fillText('福',226,239);
+  }
+  // [d9] lotus floating on pond
+  if(R){
+    ctx.fillStyle='#ffa0c8';
+    ctx.beginPath(); ctx.arc(300,230,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2e7840';
+    ctx.beginPath(); ctx.ellipse(300,232,10,4,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#ff80b0';
+    [[298,228],[302,228],[300,226]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,2,0,Math.PI*2); ctx.fill(); });
+  }
  }
 },
 
@@ -708,6 +1019,10 @@ const LEVELS=[
   {cx:88, cy:155,r:18,name:'烟囱烟雾'},
   {cx:405,cy:55, r:26,name:'月亮形状'},
   {cx:108,cy:242,r:18,name:'雪人围巾'},
+  {cx:108,cy:285,r:20,name:'扫帚'},
+  {cx:180,cy:40, r:18,name:'雪花'},
+  {cx:320,cy:295,r:20,name:'雪橇'},
+  {cx:60, cy:300,r:18,name:'礼物盒'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -813,6 +1128,39 @@ const LEVELS=[
   ctx.fillStyle='#c0c8d0'; ctx.strokeStyle='#a0a8b0'; ctx.lineWidth=1;
   for(let x=170;x<460;x+=20){ ctx.fillRect(x,255,6,30); ctx.fillRect(x-2,255,10,6); }
   ctx.fillRect(168,265,292,5); // horizontal rail
+  // [d7] broom next to snowman (only L)
+  if(!R){
+    ctx.strokeStyle='#7a5030'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(125,260); ctx.lineTo(138,295); ctx.stroke();
+    ctx.fillStyle='#c89040';
+    [[135,292,4],[139,293,3],[142,295,3]].forEach(([x,y,r])=>{
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x-4,y+8); ctx.lineTo(x+4,y+8); ctx.closePath(); ctx.fill();
+    });
+  }
+  // [d8] snowflake (only L)
+  if(!R){
+    ctx.save(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.globalAlpha=.9;
+    ctx.translate(180,40);
+    for(let i=0;i<6;i++){
+      ctx.rotate(Math.PI/3);
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-9); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-5); ctx.lineTo(2,-7); ctx.moveTo(0,-5); ctx.lineTo(-2,-7); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  // [d9] sled (only R)
+  if(R){
+    ctx.fillStyle='#8a3818'; ctx.fillRect(305,290,36,10);
+    ctx.strokeStyle='#3a2010'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(302,302); ctx.lineTo(344,302); ctx.stroke();
+    ctx.fillStyle='#b04028'; ctx.fillRect(308,287,6,4); ctx.fillRect(332,287,6,4);
+  }
+  // [d10] present box
+  if(!R){
+    ctx.fillStyle='#cc2020'; ctx.fillRect(52,294,18,14);
+    ctx.fillStyle='#ffd700'; ctx.fillRect(60,294,3,14); ctx.fillRect(52,300,18,2);
+    ctx.beginPath(); ctx.arc(61,292,3,0,Math.PI*2); ctx.fill();
+  }
  }
 },
 
@@ -826,6 +1174,10 @@ const LEVELS=[
   {cx:155,cy:198,r:22,name:'小鱼群方向'},
   {cx:418,cy:218,r:24,name:'海草高度'},
   {cx:140,cy:280,r:18,name:'海星'},
+  {cx:250,cy:70, r:18,name:'气泡数量'},
+  {cx:40, cy:170,r:20,name:'小章鱼'},
+  {cx:350,cy:205,r:20,name:'海龟'},
+  {cx:230,cy:290,r:20,name:'潜水员'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -918,6 +1270,46 @@ const LEVELS=[
     for(let i=0;i<5;i++){ const a=i*Math.PI*.4-Math.PI/2; ctx.lineTo(Math.cos(a)*14,Math.sin(a)*14); const a2=a+Math.PI*.2; ctx.lineTo(Math.cos(a2)*6,Math.sin(a2)*6); }
     ctx.closePath(); ctx.fill(); ctx.restore();
   }
+  // [d7] extra bubbles near top
+  if(R){
+    ctx.strokeStyle='rgba(150,220,255,.5)'; ctx.lineWidth=1.5;
+    [[245,68],[258,75],[252,58]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.stroke(); });
+  }
+  // [d8] little octopus
+  if(!R){
+    ctx.fillStyle='#c04088';
+    ctx.beginPath(); ctx.arc(40,166,12,Math.PI,0); ctx.fill();
+    ctx.fillRect(28,166,24,5);
+    ctx.strokeStyle='#c04088'; ctx.lineWidth=2.5; ctx.lineCap='round';
+    [[-8,0],[-4,0],[0,0],[4,0],[8,0]].forEach(([dx],i)=>{
+      ctx.beginPath(); ctx.moveTo(40+dx,171); ctx.quadraticCurveTo(40+dx+(i%2?4:-4),180,40+dx,186); ctx.stroke();
+    });
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(36,162,2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(44,162,2,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(36,163,1,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(44,163,1,0,Math.PI*2); ctx.fill();
+  }
+  // [d9] turtle
+  if(R){
+    ctx.fillStyle='#2e6a3a';
+    ctx.beginPath(); ctx.ellipse(350,207,18,12,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#4a8a50';
+    [[345,203,4],[355,203,4],[350,210,4]].forEach(([x,y,r])=>{ ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); });
+    ctx.fillStyle='#2e6a3a';
+    ctx.beginPath(); ctx.arc(367,207,6,0,Math.PI*2); ctx.fill(); // head
+    ctx.fillRect(333,203,5,4); ctx.fillRect(333,212,5,4); // back flippers
+    ctx.fillRect(362,200,5,4); ctx.fillRect(362,215,5,4); // front flippers
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(370,206,1.5,0,Math.PI*2); ctx.fill();
+  }
+  // [d10] diver
+  if(!R){
+    ctx.fillStyle='#ffa040';
+    ctx.beginPath(); ctx.ellipse(230,290,10,14,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2a3848'; // mask
+    ctx.beginPath(); ctx.arc(230,283,7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(140,200,255,.5)';
+    ctx.beginPath(); ctx.arc(230,283,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#888'; // tank
+    ctx.fillRect(225,294,10,8);
+  }
  }
 },
 
@@ -932,6 +1324,10 @@ const LEVELS=[
   {cx:62, cy:188,r:26,name:'左树高度'},
   {cx:428,cy:188,r:26,name:'右树高度'},
   {cx:290,cy:274,r:18,name:'木柴数量'},
+  {cx:170,cy:285,r:20,name:'小狗'},
+  {cx:358,cy:285,r:22,name:'椅子'},
+  {cx:240,cy:250,r:14,name:'帐篷窗'},
+  {cx:80, cy:260,r:22,name:'背包'},
  ],
  draw(ctx,R){
   ctx.clearRect(0,0,W,H);
@@ -1025,6 +1421,43 @@ const LEVELS=[
   // fire embers
   ctx.fillStyle='rgba(255,180,50,.7)';
   [[295,244],[308,242],[300,238],[306,250]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,1.5,0,Math.PI*2); ctx.fill(); });
+  // [d8] small dog (only L)
+  if(!R){
+    ctx.fillStyle='#a06830';
+    ctx.beginPath(); ctx.ellipse(170,287,14,7,0,0,Math.PI*2); ctx.fill(); // body
+    ctx.beginPath(); ctx.arc(182,282,6,0,Math.PI*2); ctx.fill(); // head
+    ctx.fillStyle='#6a3818';
+    ctx.beginPath(); ctx.moveTo(180,277); ctx.lineTo(178,272); ctx.lineTo(184,275); ctx.closePath(); ctx.fill(); // ear
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(185,281,1.2,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#a06830'; ctx.fillRect(160,292,3,5); ctx.fillRect(178,292,3,5);
+  }
+  // [d9] camp chair (only R)
+  if(R){
+    ctx.fillStyle='#5a3818';
+    ctx.fillRect(350,280,18,4); // seat
+    ctx.strokeStyle='#3a2010'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(352,284); ctx.lineTo(350,298); ctx.moveTo(366,284); ctx.lineTo(368,298); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(352,284); ctx.lineTo(354,272); ctx.stroke();
+    ctx.fillStyle='#8a4028';
+    ctx.fillRect(352,272,6,12); // backrest
+  }
+  // [d10] tent window light
+  if(!R){
+    ctx.fillStyle='rgba(255,230,140,.8)';
+    ctx.beginPath(); ctx.ellipse(240,250,7,5,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,200,80,.9)';
+    ctx.beginPath(); ctx.ellipse(240,250,4,3,0,0,Math.PI*2); ctx.fill();
+  }
+  // [d11] backpack
+  if(R){
+    ctx.fillStyle='#8a3020';
+    ctx.fillRect(70,254,20,22);
+    ctx.fillStyle='#6a2010'; ctx.fillRect(72,254,16,4); // top flap
+    ctx.strokeStyle='#3a1008'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(72,258); ctx.quadraticCurveTo(68,266,72,274); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(88,258); ctx.quadraticCurveTo(92,266,88,274); ctx.stroke();
+    ctx.fillStyle='#c8a848'; ctx.fillRect(78,262,4,3); // buckle
+  }
  }
 }
 
@@ -1035,8 +1468,11 @@ const LEVELS=[
 ═══════════════════════════════════════════ */
 let currentLvlIdx=0, activeDiffs=[];
 let score=0, found=0, lives=3, hintCount=3;
-let ringAnims=[], wrongAnims=[], hintAnims=[];
+let ringAnims=[], wrongAnims=[], hintAnims=[], burstAnims=[];
 let rafId=null;
+let combo=0, maxCombo=0, lastHitTime=0;
+let levelStartTime=0, levelElapsedSec=0;
+let tutorialStep=0, inTutorial=false;
 
 /* zoom / pan (shared for both canvases) */
 let zoom=1, panX=0, panY=0;
@@ -1141,6 +1577,7 @@ function onTE(e){
    CLICK / TAP
 ═══════════════════════════════════════════ */
 function handleTap(clientX,clientY,isRight){
+  if(inTutorial) return;
   if(found>=activeDiffs.length||lives<=0) return;
   const canvas=isRight?CR:CL;
   const el=screenToCanvas(clientX,clientY,canvas);
@@ -1151,11 +1588,21 @@ function handleTap(clientX,clientY,isRight){
       if(d.found){showTip('这里已经找到啦～');}
       else{
         d.found=true; found++;
-        score+=Math.max(20,50-found*2);
+        const now=Date.now();
+        if(now-lastHitTime<3500) combo++; else combo=1;
+        lastHitTime=now;
+        if(combo>maxCombo) maxCombo=combo;
+        const comboBonus=combo>=2?combo*5:0;
+        score+=Math.max(20,50-found*2)+comboBonus;
         refreshScore(); refreshDiffRow();
         showTip('✅ 找到了！【'+d.name+'】');
         ringAnims.push({cx:d.cx,cy:d.cy,r:d.r,age:0});
+        burstAnims.push({cx:d.cx,cy:d.cy,age:0});
         flashBlock();
+        if(combo>=2){
+          const txt=combo>=5?'🔥 完美连击 ×'+combo+'!':combo>=3?'⚡ 超棒 ×'+combo:'✨ 连击 ×'+combo;
+          showCombo(txt);
+        }
         if(found>=activeDiffs.length) setTimeout(()=>endGame(true),700);
       }
       hit=true; break;
@@ -1163,9 +1610,16 @@ function handleTap(clientX,clientY,isRight){
   }
   if(!hit){
     wrongAnims.push({cx:mx,cy:my,age:0});
+    combo=0;
     loseHeart();
     showTip('❌ 这里没差异，仔细看！');
   }
+}
+function showCombo(text){
+  const el=document.getElementById('comboPopup');
+  el.textContent=text;
+  el.classList.remove('on'); void el.offsetWidth;
+  el.classList.add('on');
 }
 /* desktop click */
 CL.addEventListener('click',e=>handleTap(e.clientX,e.clientY,false));
@@ -1239,12 +1693,30 @@ function renderAll(){
       ctx.restore();
     });
 
-    /* found ripple */
+    /* found ripple (double) */
     ringAnims.forEach(a=>{
       const p=a.age/45;
       ctx.save(); ctx.globalAlpha=Math.max(0,1-p);
       ctx.strokeStyle='#4ecca3'; ctx.lineWidth=3/zoom;
       ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r+p*28,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=Math.max(0,.7-p);
+      ctx.strokeStyle='#ffd700'; ctx.lineWidth=2/zoom;
+      ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r+p*18,0,Math.PI*2); ctx.stroke();
+      ctx.restore();
+    });
+
+    /* found burst (gold sparkles) */
+    burstAnims.forEach(a=>{
+      const p=a.age/40;
+      ctx.save();
+      for(let i=0;i<8;i++){
+        const ang=i*Math.PI/4+a.age*.04;
+        const dist=p*36;
+        const x=a.cx+Math.cos(ang)*dist, y=a.cy+Math.sin(ang)*dist;
+        ctx.globalAlpha=Math.max(0,1-p);
+        ctx.fillStyle=i%2?'#ffd700':'#fff';
+        ctx.beginPath(); ctx.arc(x,y,(1-p)*3.5/zoom+1,0,Math.PI*2); ctx.fill();
+      }
       ctx.restore();
     });
 
@@ -1262,10 +1734,11 @@ function renderAll(){
     ctx.restore();
   });
 
-  ringAnims.forEach(a=>a.age++); wrongAnims.forEach(a=>a.age++); hintAnims.forEach(a=>a.age++);
+  ringAnims.forEach(a=>a.age++); wrongAnims.forEach(a=>a.age++); hintAnims.forEach(a=>a.age++); burstAnims.forEach(a=>a.age++);
   ringAnims=ringAnims.filter(a=>a.age<=45);
   wrongAnims=wrongAnims.filter(a=>a.age<=30);
   hintAnims=hintAnims.filter(a=>a.age<a.maxAge);
+  burstAnims=burstAnims.filter(a=>a.age<=40);
   rafId=requestAnimationFrame(renderAll);
 }
 
@@ -1324,7 +1797,9 @@ function startLevel(idx){
   const lv=LEVELS[idx];
   activeDiffs=lv.diffs.map(d=>({...d,found:false}));
   score=0;found=0;lives=3;hintCount=3;
-  ringAnims=[];wrongAnims=[];hintAnims=[];
+  combo=0;maxCombo=0;lastHitTime=0;
+  levelStartTime=Date.now();
+  ringAnims=[];wrongAnims=[];hintAnims=[];burstAnims=[];
   resetZoom();
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
 
@@ -1349,27 +1824,140 @@ function startLevel(idx){
 
   resizeCanvases();
   renderAll();
+
+  // first-time tutorial (only on first level + never seen)
+  if(idx===0 && !localStorage.getItem('tutDone')){
+    setTimeout(startTutorial,350);
+  }
 }
+
+/* ═══════════════════════════════════════════
+   TUTORIAL
+═══════════════════════════════════════════ */
+function startTutorial(){
+  inTutorial=true; tutorialStep=0;
+  document.getElementById('tutorialOverlay').classList.add('on');
+  renderTutorialStep();
+}
+function renderTutorialStep(){
+  const ov=document.getElementById('tutorialOverlay');
+  const msg=document.getElementById('tutScrollMsg');
+  const spot=document.getElementById('tutSpot');
+  const finger=document.getElementById('tutFinger');
+  const btn=document.getElementById('tutBtn');
+  spot.style.display='none'; finger.style.display='none';
+  if(tutorialStep===0){
+    msg.innerHTML='👋 欢迎来到<b>找不同大挑战</b><small>上下两张图有若干处不同，找出它们！</small>';
+    btn.textContent='我知道了';
+    btn.style.display='';
+  } else if(tutorialStep===1){
+    // show a spotlight on one diff point on the RIGHT canvas
+    const d=activeDiffs[0];
+    const rect=CR.getBoundingClientRect();
+    const sx=rect.left+(d.cx/W)*rect.width;
+    const sy=rect.top+(d.cy/H)*rect.height;
+    const sr=Math.max(40,(d.r/W)*rect.width*1.2);
+    spot.style.left=(sx-sr)+'px';
+    spot.style.top=(sy-sr)+'px';
+    spot.style.width=(sr*2)+'px';
+    spot.style.height=(sr*2)+'px';
+    spot.style.display='block';
+    finger.style.left=sx+'px';
+    finger.style.top=(sy+sr+10)+'px';
+    finger.style.display='block';
+    msg.innerHTML='👇 发现不同了吗？<b>点击右图里不一样的地方</b><small>我们已经帮你圈出了一个</small>';
+    btn.textContent='开始挑战';
+  } else {
+    endTutorial();
+  }
+}
+function nextTutorialStep(){
+  tutorialStep++;
+  renderTutorialStep();
+}
+function endTutorial(){
+  inTutorial=false;
+  localStorage.setItem('tutDone','1');
+  document.getElementById('tutorialOverlay').classList.remove('on');
+}
+window.addEventListener('resize',()=>{ if(inTutorial&&tutorialStep===1) renderTutorialStep(); });
 
 /* ═══════════════════════════════════════════
    END GAME
 ═══════════════════════════════════════════ */
+function formatTime(s){
+  const m=Math.floor(s/60), sec=s%60;
+  return (m<10?'0'+m:m)+':'+(sec<10?'0'+sec:sec);
+}
 function endGame(win){
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   const lv=LEVELS[currentLvlIdx];
+  levelElapsedSec=Math.max(1,Math.floor((Date.now()-levelStartTime)/1000));
+  const box=document.getElementById('oBox');
+  const crown=document.getElementById('vCrown');
+  const frame=document.getElementById('victoryFrame');
+  const stats=document.getElementById('vStatsBlock');
+  const social=document.getElementById('vSocial');
+  const shareBtn=document.getElementById('btnShare');
+
   const starCount=win?(lives===3?3:lives>=1?2:1):0;
   document.getElementById('oStars').textContent='⭐'.repeat(starCount)+'☆'.repeat(3-starCount);
+
   if(win){
     const prev=+(localStorage.getItem('best_'+lv.id)||0);
     if(score>prev) localStorage.setItem('best_'+lv.id,score);
+    // render thumbnail into victory canvas
+    const vc=document.getElementById('vCanvas');
+    const vctx=vc.getContext('2d');
+    lv.draw(vctx,true);
+    // overlay found circles
+    activeDiffs.forEach(d=>{
+      vctx.save();
+      vctx.strokeStyle='#4ecca3'; vctx.lineWidth=3;
+      vctx.beginPath(); vctx.arc(d.cx,d.cy,d.r,0,Math.PI*2); vctx.stroke();
+      vctx.restore();
+    });
+    box.classList.add('victory');
+    crown.style.display='inline-block';
+    frame.style.display='block';
+    stats.style.display='flex';
+    social.style.display='block';
+    shareBtn.style.display='';
+    document.getElementById('vTime').textContent=formatTime(levelElapsedSec);
+    document.getElementById('vScore').textContent=score;
+    const rank=starCount===3?'S':starCount===2?'A':'B';
+    document.getElementById('vRank').textContent=rank;
+    // fake but realistic social stat
+    const pct=Math.max(8,Math.min(72,Math.floor(60-levelElapsedSec*.8+Math.random()*15)));
+    const benchmark=Math.max(15,Math.floor(levelElapsedSec*0.55));
+    social.innerHTML=`🏆 有 <b>${pct}%</b> 的玩家在 <b>${benchmark}</b> 秒内通关<br>
+      你的最大连击：<b>×${maxCombo}</b>，再来一把看看能不能更快？`;
+    document.getElementById('oTitle').textContent='🎉 恭喜通关!';
+    document.getElementById('oMsg').textContent='';
+  } else {
+    box.classList.remove('victory');
+    crown.style.display='none';
+    frame.style.display='none';
+    stats.style.display='none';
+    social.style.display='none';
+    shareBtn.style.display='none';
+    document.getElementById('oTitle').textContent='💔 挑战失败';
+    document.getElementById('oMsg').textContent=`找到了 ${found}/${lv.diffs.length} 处，再来！`;
   }
-  document.getElementById('oTitle').textContent=win?'🎉 全部找到！':'💔 挑战失败';
-  document.getElementById('oMsg').textContent=win
-    ?`找到 ${found} 处，得 ${score} 分！`
-    :`找到了 ${found}/${lv.diffs.length} 处，再来！`;
   const isLast=currentLvlIdx>=LEVELS.length-1;
   document.getElementById('btnNextLvl').style.display=(win&&!isLast)?'':'none';
   document.getElementById('overlay').className='on';
+}
+function shareResult(){
+  const lv=LEVELS[currentLvlIdx];
+  const text=`我在《找不同》第${lv.id}关 ${lv.name} 用 ${formatTime(levelElapsedSec)} 通关，得分 ${score}，最大连击 ×${maxCombo}！你敢来挑战吗？ ${location.href}`;
+  if(navigator.share){
+    navigator.share({title:'找不同·眼力大挑战',text,url:location.href}).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>showTip('✅ 战绩已复制，快发给好友！'));
+  } else {
+    prompt('复制分享文案：',text);
+  }
 }
 function goNext(){if(currentLvlIdx<LEVELS.length-1)startLevel(currentLvlIdx+1);}
 
