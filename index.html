@@ -2,123 +2,203 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🔍 找不同</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>找不同·眼力大挑战</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0d0d1a; min-height:100vh; font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif; color:#eee; overflow-x:hidden; padding-bottom:env(safe-area-inset-bottom,0px); }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0d0d1a;font-family:'PingFang SC','Microsoft YaHei',Arial,sans-serif;color:#eee;}
 
-/* ── SELECT ── */
-#screenSelect { display:flex; flex-direction:column; align-items:center; padding:28px 16px 50px; }
-.appTitle { font-size:2.4rem; color:#ffd700; letter-spacing:5px; margin-bottom:6px; text-shadow:0 0 30px rgba(255,215,0,.45); }
-.appSub { color:#777; font-size:.9rem; margin-bottom:30px; }
-#levelGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:680px; width:100%; }
-@media(max-width:520px){ #levelGrid{ grid-template-columns:repeat(2,1fr); } }
-.levelCard { background:linear-gradient(160deg,#1a1a2e,#16213e); border:2px solid #2a2a4a; border-radius:14px; padding:18px 10px 14px; text-align:center; cursor:pointer; transition:all .22s; }
-.levelCard:hover { border-color:#ffd700; transform:translateY(-3px); box-shadow:0 8px 24px rgba(255,215,0,.18); }
-.cIcon { font-size:2rem; display:block; margin-bottom:7px; }
-.cNum { color:#555; font-size:.68rem; letter-spacing:1px; }
-.cName { color:#ffd700; font-size:.96rem; font-weight:bold; margin:3px 0; }
-.cInfo { color:#4ecca3; font-size:.7rem; margin-bottom:3px; }
-.cStars { font-size:.78rem; }
-.cBest { color:#555; font-size:.68rem; margin-top:5px; min-height:13px; }
+/* ══ SELECT SCREEN ══ */
+#screenSelect{
+  display:flex;flex-direction:column;align-items:center;
+  height:100%;overflow-y:auto;padding:28px 16px 48px;
+}
+.appLogo{font-size:2.6rem;color:#ffd700;letter-spacing:4px;margin-bottom:4px;
+  text-shadow:0 0 30px rgba(255,215,0,.5);}
+.appSub{color:#666;font-size:.88rem;margin-bottom:28px;}
+#levelGrid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;max-width:680px;width:100%;
+}
+@media(max-width:520px){#levelGrid{grid-template-columns:repeat(2,1fr);}}
+.lvCard{
+  background:linear-gradient(160deg,#161628,#0f1020);
+  border:1.5px solid #252540;border-radius:16px;
+  padding:18px 10px 14px;text-align:center;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.lvCard::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,215,0,.06),transparent);
+  opacity:0;transition:opacity .2s;}
+.lvCard:hover,.lvCard:active{border-color:#ffd700;transform:scale(1.03);}
+.lvCard:hover::after,.lvCard:active::after{opacity:1;}
+.lcIcon{font-size:2.2rem;display:block;margin-bottom:8px;}
+.lcNum{color:#444;font-size:.65rem;letter-spacing:1px;}
+.lcName{color:#ffd700;font-size:.94rem;font-weight:bold;margin:3px 0 4px;}
+.lcInfo{color:#4ecca3;font-size:.68rem;margin-bottom:3px;}
+.lcStars{font-size:.75rem;letter-spacing:1px;}
+.lcBest{color:#444;font-size:.65rem;margin-top:5px;min-height:12px;}
 
-/* ── GAME ── */
-#screenGame { display:none; flex-direction:column; align-items:center; padding:10px 8px 20px; }
-#gameTop { width:100%; }
-.gHeader { display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; justify-content:center; }
-#gameTitle { font-size:1.25rem; color:#ffd700; letter-spacing:2px; }
-#btnBack { padding:4px 12px; background:transparent; border:1px solid #444; border-radius:16px; color:#888; font-size:.78rem; cursor:pointer; }
-#btnBack:hover { border-color:#888; color:#ccc; }
-#hud { display:flex; align-items:center; gap:16px; margin-bottom:8px; flex-wrap:wrap; justify-content:center; }
-.hb { text-align:center; min-width:46px; }
-.hl { color:#555; font-size:.68rem; }
-.hv { color:#ffd700; font-size:1.22rem; font-weight:bold; }
-#btnHint { padding:5px 15px; background:rgba(78,204,163,.12); border:1px solid rgba(78,204,163,.45); border-radius:20px; color:#4ecca3; font-size:.8rem; cursor:pointer; white-space:nowrap; transition:all .2s; }
-#btnHint:hover:not(:disabled) { background:rgba(78,204,163,.28); }
-#btnHint:disabled { opacity:.35; cursor:default; }
-#boards { display:flex; gap:10px; align-items:flex-start; justify-content:center; }
-.col { display:flex; flex-direction:column; align-items:center; gap:4px; }
-.col span { color:#777; font-size:.75rem; }
-canvas { border:2px solid #2e2e4e; border-radius:8px; cursor:crosshair; display:block; width:460px; height:320px; max-width:calc(50vw - 12px); }
-#dots { display:flex; gap:7px; margin-top:8px; flex-wrap:wrap; justify-content:center; }
-.dot { width:18px; height:18px; border-radius:50%; background:#1a1a2e; border:2px solid #333; transition:all .35s; }
-.dot.ok { background:#4ecca3; border-color:#4ecca3; box-shadow:0 0 8px rgba(78,204,163,.55); }
-#tip { color:#666; font-size:.83rem; margin-top:6px; min-height:19px; text-align:center; }
-/* ── MOBILE: 全宽画布 + 顶部悬浮 HUD + 自然滚动 ── */
-@media(max-width:600px){
-  #screenGame { padding:0 0 env(safe-area-inset-bottom,16px); align-items:stretch; }
-  #gameTop {
-    position:sticky; top:0; z-index:50;
-    background:#0d0d1a;
-    border-bottom:1px solid #1e1e3e;
-    padding:8px 10px 6px;
-  }
-  .gHeader { margin-bottom:4px; gap:8px; justify-content:flex-start; }
-  #gameTitle { font-size:1rem; letter-spacing:1px; }
-  #btnBack { font-size:.72rem; padding:3px 10px; }
-  #hud { gap:0; margin-bottom:0; justify-content:space-between; width:100%; }
-  .hb { min-width:0; flex:1; }
-  .hl { font-size:.58rem; }
-  .hv { font-size:.95rem; }
-  #btnHint { font-size:.7rem; padding:4px 10px; flex-shrink:0; }
-  /* 画布全宽，边到边 */
-  #boards { flex-direction:column; gap:0; width:100%; }
-  .col { width:100%; gap:0; }
-  .col span { font-size:.72rem; padding:6px 0 3px; background:#0d0d1a; display:block; text-align:center; }
-  canvas { border-radius:0; border-left:none; border-right:none; width:100% !important; }
-  #dots { margin-top:10px; gap:8px; padding:0 12px; }
-  .dot { width:16px; height:16px; }
-  #tip { font-size:.8rem; margin-top:5px; padding:0 12px 12px; }
+/* ══ GAME SCREEN ══ */
+#screenGame{
+  display:none;flex-direction:column;
+  height:100%;width:100%;
+  overflow:hidden;position:relative;
 }
 
-/* ── OVERLAY ── */
-#overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.82); align-items:center; justify-content:center; z-index:200; }
-#overlay.on { display:flex; }
-#oBox { background:linear-gradient(160deg,#1a1a2e,#16213e); border:2px solid #ffd700; border-radius:18px; padding:34px 48px; text-align:center; max-width:min(92vw,420px); }
-#oBox h2 { font-size:2rem; color:#ffd700; margin-bottom:10px; }
-#oBox p { color:#999; font-size:.92rem; margin-bottom:22px; line-height:1.65; }
-.oBtns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-.oBtns button { padding:9px 22px; border:none; border-radius:22px; font-size:.9rem; font-weight:bold; cursor:pointer; transition:opacity .18s; }
-.oBtns button:hover { opacity:.82; }
-#btnReplay { background:#2a3550; color:#aaa; border:1px solid #445; }
-#btnToSelect { background:#4ecca3; color:#1a1a2e; }
-#btnNextLvl { background:#ffd700; color:#1a1a2e; }
+/* sticky top bar */
+#gameBar{
+  flex-shrink:0;
+  background:rgba(13,13,26,.95);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid #1e1e3e;
+  padding:8px 12px 6px;
+  z-index:50;
+}
+.barRow1{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+#btnBack{
+  background:transparent;border:1px solid #2e2e5e;
+  border-radius:20px;color:#888;font-size:.75rem;
+  padding:4px 12px;cursor:pointer;white-space:nowrap;
+}
+#btnBack:active{background:#1e1e3e;}
+#barLevelName{font-size:1.05rem;color:#ffd700;font-weight:bold;letter-spacing:1px;}
+.barRight{display:flex;align-items:center;gap:10px;}
+#livesDisplay{font-size:1.2rem;letter-spacing:2px;}
+#btnHint{
+  background:rgba(78,204,163,.1);
+  border:1px solid rgba(78,204,163,.4);
+  border-radius:20px;color:#4ecca3;
+  font-size:.75rem;padding:4px 12px;cursor:pointer;
+  white-space:nowrap;transition:all .2s;
+}
+#btnHint:active{background:rgba(78,204,163,.3);}
+#btnHint:disabled{opacity:.3;cursor:default;}
+
+/* ? progress dots row */
+#diffRow{
+  display:flex;gap:5px;justify-content:center;flex-wrap:wrap;
+}
+.dSlot{
+  width:22px;height:22px;border-radius:50%;
+  background:#1a1a30;border:1.5px solid #2e2e5e;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;color:#556;
+  transition:all .3s;
+}
+.dSlot.found{
+  background:#4ecca3;border-color:#4ecca3;
+  color:#0d1a18;font-weight:bold;
+  box-shadow:0 0 8px rgba(78,204,163,.6);
+}
+.dSlot.hint-glow{
+  border-color:#ffe84d;
+  box-shadow:0 0 10px rgba(255,232,77,.8);
+}
+
+/* scrollable canvas area */
+#gameBody{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.imgBlock{width:100%;position:relative;}
+.imgLabel{
+  text-align:center;font-size:.72rem;color:#555;
+  padding:6px 0 3px;background:#0d0d1a;
+}
+canvas{
+  display:block;width:100%;
+  border-top:1px solid #1e1e3e;
+  border-bottom:1px solid #1e1e3e;
+  cursor:crosshair;touch-action:none;
+}
+#gameFooter{
+  padding:10px 14px 16px;text-align:center;
+}
+#scoreRow{color:#888;font-size:.78rem;}
+#tip{color:#555;font-size:.8rem;margin-top:4px;min-height:18px;}
+
+/* ══ OVERLAY ══ */
+#overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  align-items:center;justify-content:center;z-index:200;
+}
+#overlay.on{display:flex;}
+#oBox{
+  background:linear-gradient(160deg,#161628,#0f1020);
+  border:2px solid #ffd700;border-radius:20px;
+  padding:36px 44px;text-align:center;
+  max-width:min(90vw,380px);
+  animation:popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+#oBox h2{font-size:2rem;color:#ffd700;margin-bottom:8px;}
+#oBox p{color:#888;font-size:.9rem;margin-bottom:6px;line-height:1.6;}
+#oStars{font-size:1.8rem;margin-bottom:18px;letter-spacing:4px;}
+.oBtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.oBtns button{
+  padding:10px 22px;border:none;border-radius:22px;
+  font-size:.9rem;font-weight:bold;cursor:pointer;
+}
+#btnReplay{background:#1e2540;color:#aaa;border:1px solid #3a3a60;}
+#btnToSelect{background:#4ecca3;color:#0d1a18;}
+#btnNextLvl{background:#ffd700;color:#0d1218;}
+
+/* heart shake animation */
+@keyframes heartShake{
+  0%{transform:scale(1);}25%{transform:scale(1.5);}50%{transform:scale(.9);}100%{transform:scale(1);}
+}
+.heart-hit{animation:heartShake .4s ease;}
+
+/* found flash overlay on canvas blocks */
+.flash-green{animation:flashG .4s ease;}
+@keyframes flashG{0%{box-shadow:0 0 0 rgba(78,204,163,0);}50%{box-shadow:0 0 30px rgba(78,204,163,.8);}100%{box-shadow:0 0 0 rgba(78,204,163,0);}}
 </style>
 </head>
 <body>
 
+<!-- SELECT -->
 <div id="screenSelect">
-  <div class="appTitle">🔍 找不同</div>
-  <div class="appSub">共 8 关，主题各异，越往后越难——你能全破吗？</div>
+  <div class="appLogo">🔍 找不同</div>
+  <div class="appSub">眼力大挑战 · 共 8 关 · 越往后越难</div>
   <div id="levelGrid"></div>
 </div>
 
+<!-- GAME -->
 <div id="screenGame">
-  <div id="gameTop">
-    <div class="gHeader">
+  <div id="gameBar">
+    <div class="barRow1">
       <button id="btnBack" onclick="backToSelect()">← 选关</button>
-      <div id="gameTitle"></div>
+      <div id="barLevelName">第1关</div>
+      <div class="barRight">
+        <div id="livesDisplay">❤️❤️❤️</div>
+        <button id="btnHint" onclick="useHint()">💡 提示</button>
+      </div>
     </div>
-    <div id="hud">
-      <div class="hb"><div class="hl">关卡</div><div class="hv" id="hudLvl">1/8</div></div>
-      <div class="hb"><div class="hl">已找到</div><div class="hv"><span id="fc">0</span>/<span id="ft">5</span></div></div>
-      <div class="hb"><div class="hl">剩余时间</div><div class="hv" id="tm">120</div></div>
-      <div class="hb"><div class="hl">得分</div><div class="hv" id="sc">0</div></div>
-      <button id="btnHint" onclick="useHint()">💡 提示 (<span id="hintLeft">3</span>)</button>
+    <div id="diffRow"></div>
+  </div>
+  <div id="gameBody">
+    <div class="imgBlock" id="blockL">
+      <div class="imgLabel">原图</div>
+      <canvas id="cL" width="460" height="320"></canvas>
+    </div>
+    <div class="imgBlock" id="blockR">
+      <div class="imgLabel">找找看 👆 捏合可放大</div>
+      <canvas id="cR" width="460" height="320"></canvas>
+    </div>
+    <div id="gameFooter">
+      <div id="scoreRow">得分：<span id="sc">0</span></div>
+      <div id="tip">点击图中不同之处</div>
     </div>
   </div>
-  <div id="boards">
-    <div class="col"><span>原图</span><canvas id="cL" width="460" height="320"></canvas></div>
-    <div class="col"><span>找找看</span><canvas id="cR" width="460" height="320"></canvas></div>
-  </div>
-  <div id="dots"></div>
-  <div id="tip">点击任意一张图的不同之处</div>
 </div>
 
+<!-- OVERLAY -->
 <div id="overlay">
   <div id="oBox">
     <h2 id="oTitle"></h2>
+    <div id="oStars"></div>
     <p id="oMsg"></p>
     <div class="oBtns">
       <button id="btnReplay" onclick="startLevel(currentLvlIdx)">重玩</button>
@@ -953,43 +1033,287 @@ const LEVELS=[
 /* ═══════════════════════════════════════════
    GAME STATE
 ═══════════════════════════════════════════ */
-let currentLvlIdx=0;
-let activeDiffs=[];
-let score=0,found=0,timeLeft=0;
-let gameTimer=null;
-let hintCount=3;
-let ringAnims=[], wrongAnims=[], hintAnim=null;
-let hintCooldown=false;
+let currentLvlIdx=0, activeDiffs=[];
+let score=0, found=0, lives=3, hintCount=3;
+let ringAnims=[], wrongAnims=[], hintAnims=[];
+let rafId=null;
+
+/* zoom / pan (shared for both canvases) */
+let zoom=1, panX=0, panY=0;
+let pinchState=null;
+let lastTouchPos=null, touchDragDist=0, lastTapTime=0;
+
+/* ═══════════════════════════════════════════
+   CANVAS SIZE
+═══════════════════════════════════════════ */
+function resizeCanvases(){
+  const cw=window.innerWidth;
+  const ch=Math.round(cw*H/W);
+  [CL,CR].forEach(c=>{c.style.width=cw+'px';c.style.height=ch+'px';});
+}
+window.addEventListener('resize',()=>{resizeCanvases();resetZoom();});
+
+/* ═══════════════════════════════════════════
+   ZOOM / PAN
+═══════════════════════════════════════════ */
+function resetZoom(){zoom=1;panX=0;panY=0;}
+function clampPan(){
+  panX=Math.max(W*(1-zoom),Math.min(0,panX));
+  panY=Math.max(H*(1-zoom),Math.min(0,panY));
+}
+/* screen → canvas-element logical pixel */
+function screenToCanvas(clientX,clientY,canvas){
+  const r=canvas.getBoundingClientRect();
+  return {x:(clientX-r.left)*(W/r.width), y:(clientY-r.top)*(H/r.height)};
+}
+/* canvas-element pixel → draw-space coords (accounting for pan/zoom) */
+function elToLogical(ex,ey){
+  return {x:(ex-panX)/zoom, y:(ey-panY)/zoom};
+}
+function pinchDist(ts){return Math.hypot(ts[0].clientX-ts[1].clientX,ts[0].clientY-ts[1].clientY);}
+function pinchMid(ts){return {x:(ts[0].clientX+ts[1].clientX)/2,y:(ts[0].clientY+ts[1].clientY)/2};}
+
+/* ═══════════════════════════════════════════
+   TOUCH EVENTS (attached once)
+═══════════════════════════════════════════ */
+function initTouch(){
+  [CL,CR].forEach(c=>{
+    c.addEventListener('touchstart',onTS,{passive:false});
+    c.addEventListener('touchmove', onTM,{passive:false});
+    c.addEventListener('touchend',  onTE,{passive:false});
+  });
+}
+function onTS(e){
+  e.preventDefault();
+  const ts=e.touches;
+  if(ts.length===2){
+    pinchState={dist:pinchDist(ts),zoom,panX,panY};
+    const mid=pinchMid(ts);
+    const el=screenToCanvas(mid.x,mid.y,e.target);
+    pinchState.lx=(el.x-panX)/zoom;
+    pinchState.ly=(el.y-panY)/zoom;
+    touchDragDist=999; // prevent tap on pinch-end
+    lastTouchPos=null;
+  } else if(ts.length===1){
+    pinchState=null;
+    touchDragDist=0;
+    lastTouchPos={x:ts[0].clientX,y:ts[0].clientY};
+    const now=Date.now();
+    if(now-lastTapTime<260){resetZoom();lastTapTime=0;}
+    else lastTapTime=now;
+  }
+}
+function onTM(e){
+  e.preventDefault();
+  const ts=e.touches;
+  if(ts.length===2&&pinchState){
+    const nd=pinchDist(ts);
+    const nm=pinchMid(ts);
+    zoom=Math.max(1,Math.min(5,pinchState.zoom*(nd/pinchState.dist)));
+    const nel=screenToCanvas(nm.x,nm.y,e.target);
+    panX=nel.x-pinchState.lx*zoom;
+    panY=nel.y-pinchState.ly*zoom;
+    clampPan();
+    return;
+  }
+  if(ts.length===1&&lastTouchPos){
+    const dx=ts[0].clientX-lastTouchPos.x, dy=ts[0].clientY-lastTouchPos.y;
+    touchDragDist+=Math.hypot(dx,dy);
+    if(zoom>1.05){
+      const r=e.target.getBoundingClientRect();
+      panX+=dx*(W/r.width); panY+=dy*(H/r.height);
+      clampPan();
+    }
+    lastTouchPos={x:ts[0].clientX,y:ts[0].clientY};
+  }
+}
+function onTE(e){
+  e.preventDefault();
+  if(e.touches.length<2) pinchState=null;
+  if(e.touches.length===0&&e.changedTouches.length===1&&touchDragDist<8){
+    const t=e.changedTouches[0];
+    handleTap(t.clientX,t.clientY,e.target===CR);
+  }
+  if(e.touches.length===0) lastTouchPos=null;
+}
+
+/* ═══════════════════════════════════════════
+   CLICK / TAP
+═══════════════════════════════════════════ */
+function handleTap(clientX,clientY,isRight){
+  if(found>=activeDiffs.length||lives<=0) return;
+  const canvas=isRight?CR:CL;
+  const el=screenToCanvas(clientX,clientY,canvas);
+  const {x:mx,y:my}=elToLogical(el.x,el.y);
+  let hit=false;
+  for(const d of activeDiffs){
+    if(Math.hypot(mx-d.cx,my-d.cy)<=d.r){
+      if(d.found){showTip('这里已经找到啦～');}
+      else{
+        d.found=true; found++;
+        score+=Math.max(20,50-found*2);
+        refreshScore(); refreshDiffRow();
+        showTip('✅ 找到了！【'+d.name+'】');
+        ringAnims.push({cx:d.cx,cy:d.cy,r:d.r,age:0});
+        flashBlock();
+        if(found>=activeDiffs.length) setTimeout(()=>endGame(true),700);
+      }
+      hit=true; break;
+    }
+  }
+  if(!hit){
+    wrongAnims.push({cx:mx,cy:my,age:0});
+    loseHeart();
+    showTip('❌ 这里没差异，仔细看！');
+  }
+}
+/* desktop click */
+CL.addEventListener('click',e=>handleTap(e.clientX,e.clientY,false));
+CR.addEventListener('click',e=>handleTap(e.clientX,e.clientY,true));
+
+function flashBlock(){
+  ['blockL','blockR'].forEach(id=>{
+    const b=document.getElementById(id);
+    b.classList.remove('flash-green');void b.offsetWidth;b.classList.add('flash-green');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   LIVES
+═══════════════════════════════════════════ */
+function loseHeart(){
+  lives=Math.max(0,lives-1); refreshLives(true);
+  if(lives<=0) setTimeout(()=>endGame(false),900);
+}
+function refreshLives(shake=false){
+  const el=document.getElementById('livesDisplay');
+  el.textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);
+  if(shake){el.classList.remove('heart-hit');void el.offsetWidth;el.classList.add('heart-hit');}
+}
+
+/* ═══════════════════════════════════════════
+   HINT
+═══════════════════════════════════════════ */
+function useHint(){
+  if(hintCount<=0) return;
+  const unfound=activeDiffs.filter(d=>!d.found);
+  if(!unfound.length) return;
+  hintCount--;
+  const btn=document.getElementById('btnHint');
+  btn.textContent=hintCount>0?'💡 提示':'💡 (无)';
+  if(hintCount<=0) btn.disabled=true;
+  unfound.forEach(d=>hintAnims.push({cx:d.cx,cy:d.cy,r:d.r,age:0,maxAge:100}));
+  showTip('💡 注意黄色高亮区域！');
+}
+
+/* ═══════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════ */
+function renderAll(){
+  const lv=LEVELS[currentLvlIdx];
+  [ctxL,ctxR].forEach((ctx,idx)=>{
+    const isRight=idx===1;
+    ctx.save();
+    ctx.setTransform(zoom,0,0,zoom,panX,panY);
+
+    lv.draw(ctx,isRight);
+
+    /* found circles */
+    activeDiffs.forEach(d=>{
+      if(!d.found) return;
+      ctx.save();
+      ctx.strokeStyle='#4ecca3'; ctx.lineWidth=3/zoom;
+      ctx.setLineDash([6/zoom,4/zoom]);
+      ctx.beginPath(); ctx.arc(d.cx,d.cy,d.r,0,Math.PI*2); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+    });
+
+    /* hint pulse */
+    hintAnims.forEach(a=>{
+      const pulse=Math.sin(a.age*.2)*.5+.5;
+      ctx.save();
+      ctx.globalAlpha=pulse*.75; ctx.strokeStyle='#ffe84d'; ctx.lineWidth=4/zoom;
+      ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r+pulse*6,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=pulse*.15; ctx.fillStyle='#ffe84d';
+      ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    });
+
+    /* found ripple */
+    ringAnims.forEach(a=>{
+      const p=a.age/45;
+      ctx.save(); ctx.globalAlpha=Math.max(0,1-p);
+      ctx.strokeStyle='#4ecca3'; ctx.lineWidth=3/zoom;
+      ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r+p*28,0,Math.PI*2); ctx.stroke();
+      ctx.restore();
+    });
+
+    /* wrong X */
+    wrongAnims.forEach(a=>{
+      const alpha=Math.max(0,1-a.age/30);
+      const s=12/zoom;
+      ctx.save(); ctx.globalAlpha=alpha;
+      ctx.strokeStyle='#ef4444'; ctx.lineWidth=3/zoom; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(a.cx-s,a.cy-s); ctx.lineTo(a.cx+s,a.cy+s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(a.cx+s,a.cy-s); ctx.lineTo(a.cx-s,a.cy+s); ctx.stroke();
+      ctx.restore();
+    });
+
+    ctx.restore();
+  });
+
+  ringAnims.forEach(a=>a.age++); wrongAnims.forEach(a=>a.age++); hintAnims.forEach(a=>a.age++);
+  ringAnims=ringAnims.filter(a=>a.age<=45);
+  wrongAnims=wrongAnims.filter(a=>a.age<=30);
+  hintAnims=hintAnims.filter(a=>a.age<a.maxAge);
+  rafId=requestAnimationFrame(renderAll);
+}
+
+/* ═══════════════════════════════════════════
+   UI
+═══════════════════════════════════════════ */
+let tipTimer;
+function showTip(msg){
+  const el=document.getElementById('tip'); el.textContent=msg;
+  clearTimeout(tipTimer);
+  tipTimer=setTimeout(()=>{if(el)el.textContent='点击图中不同之处';},2800);
+}
+function refreshScore(){document.getElementById('sc').textContent=score;}
+function refreshDiffRow(){
+  document.querySelectorAll('.dSlot').forEach((s,i)=>{
+    const d=activeDiffs[i];
+    s.className='dSlot'+(d?.found?' found':'');
+    s.textContent=d?.found?'✓':'?';
+  });
+}
 
 /* ═══════════════════════════════════════════
    LEVEL SELECT
 ═══════════════════════════════════════════ */
-function buildLevelSelect(){
+function buildSelect(){
   const grid=document.getElementById('levelGrid');
   grid.innerHTML='';
   LEVELS.forEach((lv,i)=>{
-    const best=localStorage.getItem('best_'+lv.id)||0;
+    const best=+(localStorage.getItem('best_'+lv.id)||0);
     const stars='⭐'.repeat(lv.difficulty)+'☆'.repeat(5-lv.difficulty);
-    const card=document.createElement('div');
-    card.className='levelCard';
-    card.innerHTML=`
-      <span class="cIcon">${lv.icon}</span>
-      <div class="cNum">第 ${lv.id} 关</div>
-      <div class="cName">${lv.name}</div>
-      <div class="cInfo">${lv.diffs.length} 处差异 · ${lv.timeLimit}s</div>
-      <div class="cStars">${stars}</div>
-      <div class="cBest">${best>0?'最高 '+best+' 分':''}</div>`;
-    card.onclick=()=>startLevel(i);
-    grid.appendChild(card);
+    const el=document.createElement('div');
+    el.className='lvCard';
+    el.innerHTML=`<span class="lcIcon">${lv.icon}</span>
+      <div class="lcNum">第 ${lv.id} 关</div>
+      <div class="lcName">${lv.name}</div>
+      <div class="lcInfo">${lv.diffs.length} 处差异</div>
+      <div class="lcStars">${stars}</div>
+      <div class="lcBest">${best?'最高 '+best+' 分':''}</div>`;
+    el.onclick=()=>startLevel(i);
+    grid.appendChild(el);
   });
 }
-
 function backToSelect(){
-  if(gameTimer){ clearInterval(gameTimer); gameTimer=null; }
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   document.getElementById('overlay').className='';
   document.getElementById('screenGame').style.display='none';
   document.getElementById('screenSelect').style.display='flex';
-  buildLevelSelect();
+  buildSelect();
 }
 
 /* ═══════════════════════════════════════════
@@ -998,201 +1322,63 @@ function backToSelect(){
 function startLevel(idx){
   currentLvlIdx=idx;
   const lv=LEVELS[idx];
-  // deep-copy diffs
   activeDiffs=lv.diffs.map(d=>({...d,found:false}));
-  score=0; found=0; timeLeft=lv.timeLimit; hintCount=3; hintCooldown=false;
-  ringAnims=[]; wrongAnims=[]; hintAnim=null;
-  if(gameTimer) clearInterval(gameTimer);
-  // UI
+  score=0;found=0;lives=3;hintCount=3;
+  ringAnims=[];wrongAnims=[];hintAnims=[];
+  resetZoom();
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+
   document.getElementById('screenSelect').style.display='none';
   document.getElementById('screenGame').style.display='flex';
   document.getElementById('overlay').className='';
-  document.getElementById('gameTitle').textContent=lv.icon+' '+lv.name;
-  document.getElementById('hudLvl').textContent=lv.id+'/'+LEVELS.length;
-  document.getElementById('fc').textContent=0;
-  document.getElementById('ft').textContent=lv.diffs.length;
-  document.getElementById('tm').textContent=timeLeft;
-  document.getElementById('tm').style.color='#ffd700';
-  document.getElementById('sc').textContent=0;
-  document.getElementById('hintLeft').textContent=hintCount;
-  document.getElementById('btnHint').disabled=false;
-  // dots
-  const dotsEl=document.getElementById('dots');
-  dotsEl.innerHTML='';
-  activeDiffs.forEach(()=>{ const d=document.createElement('div'); d.className='dot'; dotsEl.appendChild(d); });
-  // timer
-  gameTimer=setInterval(()=>{
-    timeLeft--;
-    document.getElementById('tm').textContent=timeLeft;
-    if(timeLeft<=10) document.getElementById('tm').style.color='#ef4444';
-    if(timeLeft<=0){ clearInterval(gameTimer); gameTimer=null; endGame(false); }
-  },1000);
+
+  document.getElementById('barLevelName').textContent='第'+lv.id+'关 '+lv.icon+' '+lv.name;
+  const btn=document.getElementById('btnHint');
+  btn.textContent='💡 提示'; btn.disabled=false;
+  document.getElementById('gameBody').scrollTop=0;
+  refreshLives(); refreshScore();
+  document.getElementById('tip').textContent='点击图中不同之处';
+
+  const row=document.getElementById('diffRow');
+  row.innerHTML='';
+  activeDiffs.forEach(()=>{
+    const s=document.createElement('div');
+    s.className='dSlot'; s.textContent='?';
+    row.appendChild(s);
+  });
+
+  resizeCanvases();
   renderAll();
 }
 
 /* ═══════════════════════════════════════════
-   HINT
+   END GAME
 ═══════════════════════════════════════════ */
-function useHint(){
-  if(hintCooldown||hintCount<=0) return;
-  const unfound=activeDiffs.find(d=>!d.found);
-  if(!unfound) return;
-  hintCount--;
-  document.getElementById('hintLeft').textContent=hintCount;
-  if(hintCount===0) document.getElementById('btnHint').disabled=true;
-  hintAnim={cx:unfound.cx,cy:unfound.cy,r:unfound.r,age:0,maxAge:90};
-  hintCooldown=true;
-  showTip('💡 提示：注意【'+unfound.name+'】的位置');
-  setTimeout(()=>{ hintCooldown=false; },3500);
-}
-
-/* ═══════════════════════════════════════════
-   CLICK
-═══════════════════════════════════════════ */
-function handleClick(e,isRight){
-  if(found>=activeDiffs.length) return;
-  const canvas=isRight?CR:CL;
-  const rect=canvas.getBoundingClientRect();
-  const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
-  const mx=(e.clientX-rect.left)*scaleX, my=(e.clientY-rect.top)*scaleY;
-  let hit=false;
-  for(const d of activeDiffs){
-    if(Math.hypot(mx-d.cx,my-d.cy)<=d.r){
-      if(d.found){ showTip('这里已经找到啦 ~'); }
-      else{
-        d.found=true; found++;
-        score+=Math.max(15,Math.floor(timeLeft/4));
-        document.getElementById('fc').textContent=found;
-        document.getElementById('sc').textContent=score;
-        showTip('✅ 找到了！【'+d.name+'】');
-        ringAnims.push({cx:d.cx,cy:d.cy,r:d.r,age:0,right:false});
-        ringAnims.push({cx:d.cx,cy:d.cy,r:d.r,age:0,right:true});
-        refreshDots();
-        if(found>=activeDiffs.length) setTimeout(()=>endGame(true),600);
-      }
-      hit=true; break;
-    }
-  }
-  if(!hit){
-    wrongAnims.push({cx:mx,cy:my,age:0,right:isRight});
-    showTip('❌ 这里没有差异，再仔细看看！');
-  }
-}
-CL.addEventListener('click',e=>handleClick(e,false));
-CR.addEventListener('click',e=>handleClick(e,true));
-CL.addEventListener('touchstart',e=>{ e.preventDefault(); if(e.touches.length) handleClick(e.touches[0],false); },{passive:false});
-CR.addEventListener('touchstart',e=>{ e.preventDefault(); if(e.touches.length) handleClick(e.touches[0],true); },{passive:false});
-
-/* ═══════════════════════════════════════════
-   RENDER LOOP
-═══════════════════════════════════════════ */
-let rafId=null;
-function renderAll(){
-  if(rafId) cancelAnimationFrame(rafId);
-  const lv=LEVELS[currentLvlIdx];
-  [ctxL,ctxR].forEach((ctx,idx)=>{
-    const isRight=idx===1;
-    lv.draw(ctx,isRight);
-    // found circles
-    activeDiffs.forEach(d=>{
-      if(!d.found) return;
-      ctx.save(); ctx.strokeStyle='#4ecca3'; ctx.lineWidth=3; ctx.setLineDash([6,4]);
-      ctx.beginPath(); ctx.arc(d.cx,d.cy,d.r,0,Math.PI*2); ctx.stroke();
-      ctx.setLineDash([]); ctx.restore();
-    });
-    // hint pulse
-    if(hintAnim){
-      const p=hintAnim.age/hintAnim.maxAge;
-      const pulse=Math.sin(hintAnim.age*.18)*0.5+0.5;
-      ctx.save(); ctx.globalAlpha=pulse*.65; ctx.strokeStyle='#ffe84d'; ctx.lineWidth=4;
-      ctx.beginPath(); ctx.arc(hintAnim.cx,hintAnim.cy,hintAnim.r+pulse*6,0,Math.PI*2); ctx.stroke();
-      ctx.globalAlpha=pulse*.15; ctx.fillStyle='#ffe84d';
-      ctx.beginPath(); ctx.arc(hintAnim.cx,hintAnim.cy,hintAnim.r,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-    }
-    // ring anims
-    ringAnims.filter(a=>a.right===isRight).forEach(a=>{
-      const p=a.age/40;
-      ctx.save(); ctx.globalAlpha=Math.max(0,1-p); ctx.strokeStyle='#4ecca3'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.arc(a.cx,a.cy,a.r+p*20,0,Math.PI*2); ctx.stroke(); ctx.restore();
-    });
-    // wrong anims
-    wrongAnims.filter(a=>a.right===isRight).forEach(a=>{
-      const alpha=Math.max(0,1-a.age/28);
-      ctx.save(); ctx.globalAlpha=alpha; ctx.strokeStyle='#ef4444'; ctx.lineWidth=2.5; ctx.lineCap='round';
-      ctx.beginPath(); ctx.moveTo(a.cx-11,a.cy-11); ctx.lineTo(a.cx+11,a.cy+11); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(a.cx+11,a.cy-11); ctx.lineTo(a.cx-11,a.cy+11); ctx.stroke();
-      ctx.restore();
-    });
-  });
-  ringAnims.forEach(a=>a.age++); wrongAnims.forEach(a=>a.age++);
-  ringAnims=ringAnims.filter(a=>a.age<=40);
-  wrongAnims=wrongAnims.filter(a=>a.age<=28);
-  if(hintAnim){ hintAnim.age++; if(hintAnim.age>=hintAnim.maxAge) hintAnim=null; }
-  rafId=requestAnimationFrame(renderAll);
-}
-
-/* ═══════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════ */
-let tipTimer;
-function showTip(msg){
-  const el=document.getElementById('tip'); el.textContent=msg;
-  clearTimeout(tipTimer);
-  tipTimer=setTimeout(()=>el.textContent='点击任意一张图的不同之处',2800);
-}
-function refreshDots(){
-  document.querySelectorAll('.dot').forEach((d,i)=>d.className='dot'+(activeDiffs[i]?.found?' ok':''));
-}
-
 function endGame(win){
-  if(gameTimer){ clearInterval(gameTimer); gameTimer=null; }
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   const lv=LEVELS[currentLvlIdx];
+  const starCount=win?(lives===3?3:lives>=1?2:1):0;
+  document.getElementById('oStars').textContent='⭐'.repeat(starCount)+'☆'.repeat(3-starCount);
   if(win){
-    const bonus=timeLeft*5;
-    score+=bonus;
-    document.getElementById('sc').textContent=score;
     const prev=+(localStorage.getItem('best_'+lv.id)||0);
     if(score>prev) localStorage.setItem('best_'+lv.id,score);
   }
-  document.getElementById('oTitle').textContent=win?'🎉 全部找到！':'⏰ 时间到！';
+  document.getElementById('oTitle').textContent=win?'🎉 全部找到！':'💔 挑战失败';
   document.getElementById('oMsg').textContent=win
-    ?`用时 ${lv.timeLimit-timeLeft} 秒，得 ${score} 分！时间奖励 +${timeLeft*5}`
-    :`找到了 ${found}/${lv.diffs.length} 处，得 ${score} 分，再试一次吧！`;
+    ?`找到 ${found} 处，得 ${score} 分！`
+    :`找到了 ${found}/${lv.diffs.length} 处，再来！`;
   const isLast=currentLvlIdx>=LEVELS.length-1;
-  document.getElementById('btnNextLvl').style.display=isLast?'none':'';
+  document.getElementById('btnNextLvl').style.display=(win&&!isLast)?'':'none';
   document.getElementById('overlay').className='on';
 }
-
-function goNext(){
-  if(currentLvlIdx<LEVELS.length-1) startLevel(currentLvlIdx+1);
-}
-
-/* ═══════════════════════════════════════════
-   RESPONSIVE CANVAS SIZING
-═══════════════════════════════════════════ */
-function resizeCanvases(){
-  const vw=window.innerWidth;
-  if(vw>600){
-    // 桌面端：左右并排
-    const maxW=Math.min(460,Math.floor(vw/2)-20);
-    const ch=Math.round(maxW*320/460);
-    [CL,CR].forEach(c=>{ c.style.width=maxW+'px'; c.style.height=ch+'px'; });
-  } else {
-    // 移动端：全宽，高度按比例自动跟随 CSS width:100%
-    // 只需设置 height，width 由 CSS 100% 控制
-    const cw=vw;
-    const ch=Math.round(cw*320/460);
-    [CL,CR].forEach(c=>{ c.style.height=ch+'px'; });
-  }
-}
-window.addEventListener('resize',resizeCanvases);
+function goNext(){if(currentLvlIdx<LEVELS.length-1)startLevel(currentLvlIdx+1);}
 
 /* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
 resizeCanvases();
-buildLevelSelect();
+initTouch();
+buildSelect();
 </script>
 </body>
 </html>
